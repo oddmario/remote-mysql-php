@@ -110,7 +110,24 @@ $conn->close();
 $rows = array();
 if( !is_bool($result) ) {
     if( !isset($request['no_rows']) ) {
-        $rows = $result->fetch_all(MYSQLI_ASSOC);
+        if( !isset($request['b64_fields']) ) {
+            $rows = $result->fetch_all(MYSQLI_ASSOC);
+        } else {
+            if( $result->num_rows > 0 ) {
+                $i = 0;
+                while($row = $result->fetch_assoc()) {
+                    $rows[$i] = array();
+                    foreach($row as $k => $v) {
+                        if( in_array($k, $request['b64_fields']) ) {
+                            $rows[$i][$k] = base64_encode($v);
+                        } else {
+                            $rows[$i][$k] = $v;
+                        }
+                    }
+                    $i++;
+                }
+            }
+        }
     }
 }
 

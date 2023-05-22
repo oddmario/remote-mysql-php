@@ -93,3 +93,35 @@ Response body:
     "insert_id": 0
 }
 ```
+
+#### Example `SELECT` query while expecting a BLOB column
+Note that if any of the returned columns is a BLOB (or any of it's derivatives), the request will most likely fail. That's why if you're expecting a BLOB column to be returned, it's better to specify the column name in the `b64_fields` part of the request.
+
+This way the script will Base64-encode the value of the column before returning it.
+
+```shell
+POST https://myproject.com/index.php?password=MyConfiguredPasswordHere
+
+Request body:
+{
+    "sql": "SELECT * FROM users LIMIT 1",
+    "b64_fields": ["profile_picture"]
+}
+
+Response body:
+
+{
+    "error": false,
+    "rows": [
+        {
+            "id": 1,
+            "username": "mario",
+            "email": "...",
+            "password": "...",
+            "profile_picture": "[base64 encoded value of the profile picture bytes will be returned here]"
+        }
+    ],
+    "num_rows": 1,
+    "insert_id": 0
+}
+```
