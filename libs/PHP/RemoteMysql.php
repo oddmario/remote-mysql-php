@@ -41,15 +41,20 @@ class RemoteMysql {
      * 
      * @param string $sql
      * @param boolean $return_rows
+     * @param array $b64_fields
      * @return RemoteMysqlResult
      */
-    public function query($sql, $return_rows = true) {
+    public function query($sql, $return_rows = true, $b64_fields = array()) {
         $reqData = array(
             "sql" => $sql,
         );
 
         if(!$return_rows) {
             $reqData['no_rows'] = true;
+        }
+
+        if(!empty($b64_fields)) {
+            $reqData['b64_fields'] = $b64_fields;
         }
 
         $req = $this->request($reqData);
@@ -71,10 +76,11 @@ class RemoteMysql {
      * 
      * @param string $sql
      * @param boolean $return_rows
+     * @param array $b64_fields
      * @return RemoteMysqlPreparedStatement
      */
-    public function prepare($sql, $return_rows = true) {
-        return new RemoteMysqlPreparedStatement($this, $sql, $return_rows);
+    public function prepare($sql, $return_rows = true, $b64_fields = array()) {
+        return new RemoteMysqlPreparedStatement($this, $sql, $return_rows, $b64_fields);
     }
 
     /**
@@ -155,13 +161,15 @@ class RemoteMysqlPreparedStatement {
     private $bindValues = array();
     private $sql = '';
     private $return_rows;
+    private $b64_fields = array();
     private $is_executed = false;
     private $result;
 
-    function __construct($parent, $sql, $return_rows = true) {
+    function __construct($parent, $sql, $return_rows = true, $b64_fields = array()) {
         $this->parent = $parent;
         $this->sql = $sql;
         $this->return_rows = $return_rows;
+        $this->b64_fields = $b64_fields;
     }
 
     /**
@@ -199,6 +207,10 @@ class RemoteMysqlPreparedStatement {
 
         if(!$this->return_rows) {
             $reqData['no_rows'] = true;
+        }
+
+        if(!empty($this->b64_fields)) {
+            $reqData['b64_fields'] = $this->b64_fields;
         }
 
         $req = $this->parent->request($reqData);
