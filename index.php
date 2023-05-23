@@ -85,6 +85,13 @@ if( is_bool($stmt) ) {
 }
 
 if( isset($request['bind_letters']) ) {
+    $b64QueryPrefix = "b64decode::";
+    foreach( $request['bind_values'] as $index => $bindValue ) {
+        if( substr($bindValue, 0, strlen($b64QueryPrefix)) ===  $b64QueryPrefix ) {
+            $request['bind_values'][$index] = base64_decode( str_replace("b64decode::", "", $bindValue) );
+        }
+    }
+
     $stmt->bind_param($request['bind_letters'], ...$request['bind_values']);
 }
 
