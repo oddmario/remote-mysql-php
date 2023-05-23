@@ -1,8 +1,15 @@
 <?php
-function getDbConn() {
+function getDbConn($db = '') {
     global $config;
 
-    $conn = new mysqli($config['db']['hostname'], $config['db']['username'], $config['db']['password'], $config['db']['name']);
+    $database = '';
+    if( empty($db) ) {
+        $database = $config['db']['name'];
+    } else {
+        $database = $db;
+    }
+
+    $conn = new mysqli($config['db']['hostname'], $config['db']['username'], $config['db']['password'], $database);
 
     if( $conn->connect_error ) {
         die("Database connection failed.");

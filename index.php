@@ -68,7 +68,11 @@ if( !isset($request['sql']) ) {
     die();
 }
 
-$conn = getDbConn();
+$db = '';
+if( isset($_GET['database']) && !empty($_GET['database']) ) {
+    $db = $_GET['database'];
+}
+$conn = getDbConn($db);
 $stmt = $conn->prepare($request['sql']);
 
 if( is_bool($stmt) ) {
