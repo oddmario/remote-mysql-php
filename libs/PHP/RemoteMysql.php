@@ -142,7 +142,7 @@ class RemoteMysqlResult {
      * @return array
      */
     public function fetch_all() {
-        return $rows;
+        return $this->rows;
     }
 }
 
