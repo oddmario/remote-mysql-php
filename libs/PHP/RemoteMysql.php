@@ -134,6 +134,7 @@ class RemoteMysql {
      */
     public function close() {
         $this->handlerURI = NULL;
+        $this->proxy = NULL;
 
         return true;
     }
@@ -260,6 +261,7 @@ class RemoteMysqlPreparedStatement {
         $this->bindValues = NULL;
         $this->sql = NULL;
         $this->return_rows = NULL;
+        $this->b64_fields = NULL;
 
         return true;
     }
