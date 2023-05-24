@@ -25,9 +25,11 @@ class RemoteMysqlPreparedStatementError extends Exception {}
  */
 class RemoteMysql {
     private $handlerURI = '';
+    private $proxy = '';
 
-    function __construct($handler_uri, $validate_connection = false) {
+    function __construct($handler_uri, $proxy = '', $validate_connection = false) {
         $this->handlerURI = $handler_uri;
+        $this->proxy = $proxy;
 
         if( $validate_connection ) {
             if( !$this->validateConnection() ) {
@@ -116,6 +118,9 @@ class RemoteMysql {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        if( !empty($this->proxy) ) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+        }
         $result = curl_exec($ch);
         curl_close($ch);
 
