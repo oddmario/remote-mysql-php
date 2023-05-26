@@ -33,11 +33,11 @@ if( $_GET['password'] !== $config['password'] ) {
 }
 
 if( $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
-    http_response_code(400);
+    http_response_code(405);
     
     echo json_encode(array(
         "error" => true,
-        "err" => "Bad Request",
+        "err" => "Method Not Allowed",
     ), JSON_PRETTY_PRINT);
     
     die();
